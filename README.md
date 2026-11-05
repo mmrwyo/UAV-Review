@@ -24,3 +24,8 @@ Run `node test.cjs`. Synthetic tests cover empty initial forms, navigation, comp
 5. Audit and submission readiness.
 
 Do not infer manuscript completion from the bibliography count. Overleaf changes require an explicit request from the project owner.
+
+## Version 2
+Guided dropdowns and editable sentence starters; required fields marked *. No paper-specific recommendation is prefilled. Finish task explicitly marks completion and hides the record from the default queue. Completed/all retains corrections and export provenance. Editing a finished answer reopens it. Ali and Omor still independently assess all 100. FNU Dayan checks metadata for CAL001–034, Sanjog Gaihre CAL035–067, Muhammad Mujahid Iqbal CAL068–100. Support exports have a separate metadata_verification stage and only assigned records. Use the updated private pack for support folder links. Existing v1 JSON responses can be restored; drafts must be checked and explicitly finished in v2.
+
+Static hosting does not synchronize completion across devices, authenticate names, or globally lock tasks. Use one active browser per reviewer and restore the latest downloaded JSON when moving devices. Metadata support tasks do not count as human eligibility screening or full-text appraisal.

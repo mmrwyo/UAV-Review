@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');const html=fs.readFileSync(__dirname+'/index.html','utf8'),code=html.split('<script>')[1].split('</script>')[0];
+const nodes=new Map();function el(id){if(!nodes.has(id))nodes.set(id,{value:'',textContent:id==='privateData'?'null':'',checked:false,classList:{add(){},remove(){},toggle(){}},style:{},add(){},replaceChildren(){},addEventListener(){},click(){}});return nodes.get(id)}
+const ctx={document:{getElementById:el,createElement:()=>el('download'),addEventListener(){}},window:{addEventListener(){}},localStorage:{setItem(){},getItem(){return null}},Option:function(){},URL:{createObjectURL(){return 'blob:test'},revokeObjectURL(){}},Blob,Date,console,setTimeout,confirm:()=>true};vm.createContext(ctx);vm.runInContext(code,ctx);
+const run=s=>vm.runInContext(s,ctx);
+run(`setPack({schema:'uav-record-pack-v1',sample_id:'TEST',sample_sha256:'testhash',people:['A','B','C'],adjudicator:'C',return_folders:{A:'https://drive.google.com/drive/folders/test',B:'https://drive.google.com/drive/folders/test',C:'https://drive.google.com/drive/folders/test'},records:Array.from({length:100},(_,i)=>({sample_id:'TEST'+i,record_id:'R'+i,title:'Synthetic test',abstract:'Test only'}))});$('person').value='A';start()`);
+assert.equal(run('Object.keys(answers).length'),0);assert.throws(()=>run('validate()'),/Finish 100/);
+run(`$('decision').value='Uncertain';$('route').value='Unclear';$('rationale').value='Synthetic test';$('evidence').value='Test abstract';$('seconds').value='10';$('assistance').value='None';capture();go(1);go(0)`);assert.equal(el('decision').value,'Uncertain');
+run(`pack.records.forEach(r=>answers[r.sample_id]={decision:'Include',route:'A',rationale:'Test',evidence:'Test',seconds:'10',notes:'',assistance:'None',reason:''});$('declare').checked=true;validate()`);
+assert.throws(()=>run(`validSubmission({...payload('COMPLETED'),reviewer:'B'},'A')`),/Wrong reviewer/);
+assert.throws(()=>run(`validSubmission({...payload('COMPLETED'),answers:Array(100).fill({sample_id:'TEST0',record_id:'R0'})},'A')`),/Record IDs/);
+assert.equal(run(`!!complete({...answers.TEST0,decision:'Exclude',reason:''})`),false);assert.equal(run(`!!complete({...answers.TEST0,decision:'Exclude',reason:'E4'})`),true);
+assert.equal(run(`!!complete({...answers.TEST0,seconds:'-2'})`),false);assert.equal(run(`!!complete({...answers.TEST0,seconds:'',notes:'Not timed'})`),true);
+assert(!html.includes('R000772'));assert(!html.includes('1q7sPT'));console.log('PASS: blank forms, navigation, completeness gate, IDs, reviewer isolation checks, exclusion reasons, timing, public-data separation. Synthetic tests only.');

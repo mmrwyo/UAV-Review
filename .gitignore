@@ -1,0 +1,9 @@
+PRIVATE*
+*Record_Pack*
+*COMPLETED*
+*DRAFT*
+*evaluation*.json
+*responses*
+*.csv
+*.pdf
+.DS_Store
